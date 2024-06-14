@@ -14,7 +14,7 @@ The examples require access to the SAS® Viya® Workbench.
 
 Start SAS® Viya® Workbench and clone the Examples repository into your Workspace:
 
-`git clone git@github.com:sassoftware/sas-viya-workbench-examples.git`
+`git clone https://github.com/sassoftware/sas-viya-workbench-examples.git`
 
 ## Getting Started
 
