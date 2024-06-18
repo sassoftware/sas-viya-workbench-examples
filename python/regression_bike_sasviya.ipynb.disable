@@ -1,0 +1,340 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Demonstrating Regularization Techniques with Python"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In this section, we're going to apply L2 and L1 regularization techniques to the Bike Sharing Demand data set and compare the training set score and test set score before and after using these techniques.\n",
+    "\n",
+    "For details about using the linear models of the `sasviya` package, see the [LinearRegression documentation](https://documentation.sas.com/?cdcId=workbenchcdc&cdcVersion=1.0&docsetId=explore&docsetTarget=n1d7uafgjjqgjxn16unnjsq57fmy.htm)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "\n",
+    "import warnings\n",
+    "from sklearn.exceptions import ConvergenceWarning\n",
+    "\n",
+    "# Filter out ConvergenceWarning messages\n",
+    "warnings.filterwarnings(\"ignore\", category=ConvergenceWarning)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Importing the data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "workspace=f'{os.path.abspath(\"\")}/../data/'\n",
+    "bikeData = pd.read_csv(workspace + 'bike_sharing_demand.csv')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Dropping Unncessary Variables"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dropFeatures = [\"casual\",\"date\",\"registered\"]\n",
+    "bikeData  = bikeData.drop(dropFeatures,axis=1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Coercing to category type"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "categoryVariableList = [\"hour\",\"weekday\",\"month\",\"season\",\"holiday\",\"workingday\",\"weather\"]\n",
+    "for var in categoryVariableList:\n",
+    "    bikeData[var] = bikeData[var].astype(\"object\")\n",
+    "bikeData.info()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Applying OneHotEncoder to convert nominal featrues to numeric values "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.preprocessing import OneHotEncoder\n",
+    "\n",
+    "### OneHotEncoder\n",
+    "OHEncoder = OneHotEncoder(sparse_output=False)\n",
+    "\n",
+    "# Get the list of nominal columns\n",
+    "nominal_columns = bikeData.select_dtypes(include=['object']).columns.tolist()\n",
+    "# Get the list of numeric columns\n",
+    "numeric_columns = bikeData.select_dtypes(exclude=['object']).columns.tolist()\n",
+    "\n",
+    "nominal_X = OHEncoder.fit_transform(bikeData[nominal_columns])\n",
+    "nominal_X_df = pd.DataFrame(nominal_X, columns=OHEncoder.get_feature_names_out(nominal_columns))\n",
+    "bikeData = pd.concat([nominal_X_df, bikeData[numeric_columns]], axis=1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(bikeData.columns.tolist())"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Removing outliers in the count column"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "bikeDataWithoutOutliers = bikeData[np.abs(bikeData[\"count\"]-bikeData[\"count\"].mean())<=(3*bikeData[\"count\"].std())] \n",
+    "\n",
+    "print (\"Shape Of The Before Outliers: \",bikeData.shape)\n",
+    "print (\"Shape Of The After Outliers: \",bikeDataWithoutOutliers.shape)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Splitting the data into 75/25 train and test"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X = bikeDataWithoutOutliers.drop(columns=['count'])\n",
+    "y = bikeDataWithoutOutliers['count']\n",
+    "\n",
+    "X_train, X_test, y_train, y_test = train_test_split(\n",
+    "    X, y, test_size=0.25, random_state=0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Train the Linear regression model and then print the training set score and the test set score:\n",
+    "\n",
+    "Score returns the coefficient of determination R² of the prediction. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sasviya.ml.linear_model import LinearRegression\n",
+    "\n",
+    "lr = LinearRegression().fit(X_train, y_train) \n",
+    "\n",
+    "print(f\"Linear Regression-Training set score: {lr.score(X_train, y_train):.2f}\")\n",
+    "print(f\"Linear Regression-Test set score: {lr.score(X_test, y_test):.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To avoid overfitting and control the complexity of the model, let's use ridge regression (L2 regularization) and see how well it does on the data set:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sasviya.ml.linear_model import Ridge\n",
+    "\n",
+    "ridge = Ridge(alpha=0.7).fit(X_train, y_train)\n",
+    "print(f\"Ridge Regression-Training set score: {ridge.score(X_train, y_train):.2f}\")\n",
+    "print(f\"Ridge Regression-Test set score: {ridge.score(X_test, y_test):.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The training set and test set scores of ridge regression are significantly lower than the linear regression score. These scores confirm that ridge regression reduces the model's complexity, leading to a less-overfit-but-more-general model."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sasviya.ml.linear_model import Ridge\n",
+    "\n",
+    "ridge = Ridge().fit(X_train, y_train)\n",
+    "print(f\"Ridge Regression-Training set score: {ridge.score(X_train, y_train):.2f}\")\n",
+    "print(f\"Ridge Regression-Test set score: {ridge.score(X_test, y_test):.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The alpha parameter specifies a trade-off between the model's performance on the training set and its simplicity. So, increasing the alpha value (its default value is 1.0) simplifies the model by shrinking the coefficients."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now, let's apply the lasso regression to the data set and explore the results."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sasviya.ml.linear_model import Lasso\n",
+    "\n",
+    "lasso = Lasso().fit(X_train, y_train)\n",
+    "print(f\"Lasso Regression-Training set score: {lasso.score(X_train, y_train):.2f}\")\n",
+    "print(f\"Lasso Regression-Test set score: {lasso.score(X_test, y_test):.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "If we want to know the exact number of features that have been used in the model, we can use the following code:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(f\"Number of features: {sum(lasso.coef_.to_numpy()[0] != 0)}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This means that only 48 of the 60 features in the training set are used in the lasso regression model, while the rest are ignored."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The last technique that we're going to use is elastic net. Let's see how well it does."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sasviya.ml.linear_model import ElasticNet\n",
+    "\n",
+    "elastic_net = ElasticNet(alpha=0.01, l1_ratio=0.01).fit(X_train, y_train)\n",
+    "print(f\"Elastic Net-Training set score: {elastic_net.score(X_train, y_train):.2f}\")\n",
+    "print(f\"Elastic Net-Test set score: {elastic_net.score(X_test, y_test):.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(f\"Number of features: {sum(elastic_net.coef_.to_numpy()[0] != 0)}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### NOTE\n",
+    "\n",
+    "In general, to avoid overfitting, the regularized models are preferable to a plain linear regression model. In most scenarios, ridge works well. But in case you're not certain about using lasso or elastic net, elastic net is a better choice because, as we've seen, lasso removes strongly correlated features."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

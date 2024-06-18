@@ -1,0 +1,3 @@
+* text eol=lf
+*.sas7bdat binary
+*.parquet binary
