@@ -19,6 +19,16 @@
 title 'Augmentating an image data set.';
 
 /******************************************************************************
+ Download the example data.
+ ******************************************************************************/
+filename exData "&WORKSPACE_PATH./sas/computer_vision/cv_example_data.zip";
+
+proc http url="https://support.sas.com/documentation/prod-p/vdmml/zip/cv_example_data.zip"
+out=exData;
+run;
+
+
+/******************************************************************************
  Set up the environment for loading images. Working with images requires a 
  SAS 9 (path based) libref for loading the images as well as a SASVIYA libref
  for processing them.
@@ -30,26 +40,29 @@ libname mylib sasviya;
 
 /******************************************************************************
  Create a fake train/test set by loading the data set and then writing the 
- train images to a subdirectory 'train' and test images to a subdirectory 
- 'test'.
+ train images to a subdirectory 'augmentation/train' and test images to a 
+ subdirectory 'augmentation/test'.
  ******************************************************************************/
 
 proc loadimages libref=mypthlib path='sas/computer_vision/cv_example_data.zip';
     output out=mylib.images;
 run; 
 
+data _null;
+    newdir=dcreate('augmentation',"&WORKSPACE_PATH./sas/computer_vision");
+run;
+
 proc saveimages libref=mypthlib 
                 data=mylib.images(where=(_id_ < 9))
-                path="data/train" 
+                path="sas/computer_vision/augmentation/train" 
                 replace; 
 run;
 
 proc saveimages libref=mypthlib 
                 data=mylib.images(where=(_id_ >= 9))
-                path="data/test" 
+                path="sas/computer_vision/augmentation/test" 
                 replace; 
 run;
-
 
 
 /******************************************************************************
@@ -58,7 +71,7 @@ run;
  up from the image as a label (which will be either 'train' or 'test').
  ******************************************************************************/
 
-proc loadimages libref=mypthlib path='data/' recurse;
+proc loadimages libref=mypthlib path='sas/computer_vision/augmentation/' recurse;
     output out=mylib.images labellevels=-1;
 run; 
 
@@ -102,7 +115,7 @@ run;
 
 proc saveimages libref=mypthlib 
                 data=mylib.zoomed_images 
-                path="data/train/" 
+                path="sas/computer_vision/augmentation/train/" 
                 suffix="_zoom"
                 replace; 
 run;
@@ -118,10 +131,11 @@ run;
 
 proc saveimages libref=mypthlib 
                 data=mylib.blurred_images 
-                path="data/train/" 
+                path="sas/computer_vision/augmentation/train/" 
                 suffix="_blur"
                 replace; 
 run;
+
 
 /******************************************************************************
 Apply color jittering, i.e. randomly adjust the saturation, contrast and 
@@ -134,7 +148,7 @@ run;
 
 proc saveimages libref=mypthlib 
                 data=mylib.color_jittered_images 
-                path="data/train/" 
+                path="sas/computer_vision/augmentation/train/" 
                 suffix="_color_jittered"
                 replace; 
 run;
@@ -151,7 +165,7 @@ run;
 
 proc saveimages libref=mypthlib 
                 data=mylib.color_shifted_images 
-                path="data/train/" 
+                path="sas/computer_vision/augmentation/train/" 
                 suffix="_color_shifted"
                 replace; 
 run;
@@ -169,7 +183,7 @@ run;
 
 proc saveimages libref=mypthlib 
                 data=mylib.rotated_lightend_images 
-                path="data/train/" 
+                path="sas/computer_vision/augmentation/train/" 
                 suffix="_rotated_lightend"
                 replace; 
 run;
@@ -185,7 +199,7 @@ proc processimages data=mylib.resized_images;
 run; 
 proc saveimages libref=mypthlib 
                 data=mylib.flipped_sharp_images 
-                path="data/train/" 
+                path="sas/computer_vision/augmentation/train/" 
                 suffix="_flipped_sharp"
                 replace; 
 run;
@@ -195,7 +209,7 @@ run;
  Finally load the test and augmented training images with PROC LOADIMAGES.
  ******************************************************************************/
 
-proc loadimages libref=mypthlib path='data/' recurse;
+proc loadimages libref=mypthlib path='sas/computer_vision/augmentation/' recurse;
     output out=mylib.augmented_images labellevels=-1;
 run; 
 
