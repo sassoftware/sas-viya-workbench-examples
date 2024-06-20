@@ -22,6 +22,16 @@
  title 'Search for a subimage within a set of images using keypoint and descriptor matching.';
 
 /******************************************************************************
+ Download the example data.
+ ******************************************************************************/
+filename exData "&WORKSPACE_PATH./sas/computer_vision/cv_example_data.zip";
+
+proc http url="https://support.sas.com/documentation/prod-p/vdmml/zip/cv_example_data.zip"
+out=exData;
+run;
+
+
+/******************************************************************************
  Set up the environment for loading images. Working with images requires a 
  SAS 9 (path based) libref for loading the images as well as a SASVIYA libref
  for processing them.
@@ -57,7 +67,7 @@ run;
 
 proc saveimages libref=mypthlib 
                 data=mylib.query_image 
-                path="sas/computer_vision/work" 
+                path="sas/computer_vision/matching" 
                 prefix="template_" 
                 replace; 
 run;
@@ -81,7 +91,7 @@ run;
 * Attempt to match the template we generated earlier to each of the mutated images in the dataset.
 **************************************************************************************************/
 proc matchimages data=mylib.mutated_images;
-    queryimage libref=mypthlib path='sas/computer_vision/work/template_sas_c_pi.png';
+    queryimage libref=mypthlib path='sas/computer_vision/matching/template_sas_c_pi.png';
     method descriptor(type=brisk thresholdratio=0.6);
     output out=mylib.matches highlight;
 run;

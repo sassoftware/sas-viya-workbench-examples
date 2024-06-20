@@ -12,6 +12,8 @@ Check out the documentation for details on each procedure.
 - FOREST
   - Bike Share ([program](./forest_bike.sas))
   - Heart ([program](./classification_heart.sas))
+- GLIMMIX
+  - Binomial Counts In Randomized Blocks ([notebook](./glimmix_binomial_counts_in_randomized_blocks.sasnb))
 - GRADBOOST
   - Students ([program](./gradientboosting_students.sas))
   - Heart ([program](./classification_heart.sas))
@@ -19,6 +21,11 @@ Check out the documentation for details on each procedure.
   - Banking ([program](./logistic_banking.sas))
   - Simulated ([program](./logistic_simulated.sas))
   - Heart ([program](./classification_heart.sas))
+- MCMC
+  - Bayesian Autoregressive and Time-Varying Coefficients Time Series Models ([notebook](./mcmc_time_series.sasnb))
+- MIXED
+  - Random Coefficients ([notebook](./mixed_random_coefficients.sasnb))
+  - Repeated Measures ([notebook](./mixed_repeated_measures.sasnb))
 - PCA
   - Breast Cancer ([program](./pca_breastcancer.sas))
   - Mushroom ([program](./pca_mushroom.sas))
@@ -58,7 +65,11 @@ on each data set.
 - Mushroom
   - PCA ([program](./pca_mushroom.sas))
 - Simulated (generated within the script)
+  - GLIMMIX ([notebook](./glimmix_binomial_counts_in_randomized_blocks.sasnb))
   - LOGSELECT ([program](./logistic_simulated.sas))
+  - MCMC ([notebook](./mcmc_time_series.sasnb))
+  - MIXED (Random Coefficients) ([notebook](./mixed_random_coefficients.sasnb))
+  - MIXED (Repeated Measures) ([notebook](./mixed_repeated_measures.sasnb))
   - PCA ([program](./pca_simulated.sas))
   - REGSELECT ([program](./linear_simulated.sas))
 - Students

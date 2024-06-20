@@ -23,6 +23,16 @@
  title 'Load and process images using the computer vision procedures and DATA step.';
 
 /******************************************************************************
+ Download the example data.
+ ******************************************************************************/
+filename exData "&WORKSPACE_PATH./sas/computer_vision/cv_example_data.zip";
+
+proc http url="https://support.sas.com/documentation/prod-p/vdmml/zip/cv_example_data.zip"
+out=exData;
+run;
+
+
+/******************************************************************************
  Set up the environmenet for loading images. Working with images requires a 
  SAS 9 (path based) libref for loading the images as well as a SASVIYA libref
  for processing them.
