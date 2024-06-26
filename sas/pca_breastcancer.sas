@@ -18,7 +18,7 @@ title 'Use the PCA procedure to extract principal components for breat cancer da
  ******************************************************************************/
 
 options nosource;
-proc import datafile="&WORKSPACE_PATH./data/breast_cancer.csv"
+proc import datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/breast_cancer.csv"
    out=breast_cancer
    dbms=csv
    replace;

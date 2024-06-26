@@ -24,13 +24,13 @@ Read the input data
 options nosource;
 /* Training dataset */
 proc import
-    datafile="&WORKSPACE_PATH./data/adult_train.csv"
+    datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/adult_train.csv"
     out=adult_train dbms=csv replace;
 run;
 
 /* Test dataset */
 proc import
-    datafile="&WORKSPACE_PATH./data/adult_test.csv"
+    datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/adult_test.csv"
     out=adult_test dbms=csv replace;
 run;
 options source;

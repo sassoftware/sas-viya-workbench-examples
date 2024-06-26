@@ -21,7 +21,7 @@ title 'Build logistic regression models with both LOGISTIC and LOGSELECT procedu
  ******************************************************************************/
 
 options nosource;
-proc import datafile="&WORKSPACE_PATH./data/banking.csv"
+proc import datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/banking.csv"
    out=banking dbms=csv replace;
 run;
 options source;

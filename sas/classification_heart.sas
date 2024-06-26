@@ -23,7 +23,7 @@ title 'Predicting heart disease using different modeling techniques';
 
 options nosource;
 proc import
-    datafile="&WORKSPACE_PATH./data/heart_disease.csv"
+    datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/heart_disease.csv"
     out=heart_disease dbms=csv replace;
 run;
 options source;

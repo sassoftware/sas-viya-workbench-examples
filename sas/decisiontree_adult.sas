@@ -21,11 +21,11 @@
 
 options nosource;
 proc import
-    datafile="&WORKSPACE_PATH./data/adult_train.csv"
+    datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/adult_train.csv"
     out=adult_train dbms=csv replace;
 run;
 proc import
-    datafile="&WORKSPACE_PATH./data/adult_test.csv"
+    datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/adult_test.csv"
     out=adult_test dbms=csv replace;
 run;
 options source;

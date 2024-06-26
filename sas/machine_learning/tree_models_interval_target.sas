@@ -24,7 +24,7 @@ title 'Tree Based Modeling for an Interval Target';
 /* Import the data. */
 options nosource;
 proc import
-    datafile="&WORKSPACE_PATH./data/bike_sharing_demand.csv"
+    datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/bike_sharing_demand.csv"
     out=bikeSharing dbms=csv replace;
 run;
 options source;
