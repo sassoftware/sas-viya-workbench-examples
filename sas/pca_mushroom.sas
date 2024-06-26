@@ -22,7 +22,7 @@ title 'Reduce model complexity using principal component analysis';
 
 options nosource;
 proc import
-    datafile="&WORKSPACE_PATH./data/mushroom.csv"
+    datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/mushroom.csv"
     out=mushroom dbms=csv replace;
 run;
 options source;

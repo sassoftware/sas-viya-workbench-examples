@@ -23,7 +23,7 @@ title 'Examples of using SAS Data Step';
  ******************************************************************************/
 
 data bonus;
-    infile "&WORKSPACE_PATH./data/bonus.csv" dsd firstobs=2;
+    infile "&WORKSPACE_PATH./sas-viya-workbench-examples/data/bonus.csv" dsd firstobs=2;
     length title $24;
     input title $ jobcode bonus;
 run;

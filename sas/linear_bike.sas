@@ -20,7 +20,7 @@ title 'Build a regression model to predict bike sharing demand';
 
 options nosource;
 proc import
-    datafile="&WORKSPACE_PATH./data/bike_sharing_demand.csv"
+    datafile="&WORKSPACE_PATH./sas-viya-workbench-examples/data/bike_sharing_demand.csv"
     out=bike_sharing dbms=csv replace;
 run;
 options source;

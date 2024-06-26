@@ -12,7 +12,7 @@ The examples require access to the SAS® Viya® Workbench.
 
 ### Installation
 
-Start SAS® Viya® Workbench and clone the Examples repository into your Workspace:
+Start SAS® Viya® Workbench and clone the examples repository into the root of your workspace:
 
 `git clone https://github.com/sassoftware/sas-viya-workbench-examples.git`
 

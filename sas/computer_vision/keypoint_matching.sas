@@ -24,7 +24,7 @@
 /******************************************************************************
  Download the example data.
  ******************************************************************************/
-filename exData "&WORKSPACE_PATH./sas/computer_vision/cv_example_data.zip";
+filename exData "&WORKSPACE_PATH./sas-viya-workbench-examples/sas/computer_vision/cv_example_data.zip";
 
 proc http url="https://support.sas.com/documentation/prod-p/vdmml/zip/cv_example_data.zip"
 out=exData;
@@ -37,7 +37,7 @@ run;
  for processing them.
  ******************************************************************************/
 
-libname mypthlib "&WORKSPACE_PATH.";
+libname mypthlib "&WORKSPACE_PATH./sas-viya-workbench-examples";
 libname mylib sasviya;
 
 
